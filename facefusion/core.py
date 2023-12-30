@@ -43,11 +43,9 @@ def apply_args() -> None:
     facefusion.globals.output_path = None                   #normalize_output_path(facefusion.globals.source_paths, facefusion.globals.target_path, args.output_path)
     # misc
     skip_download = getattr(shared.cmd_opts, "facefusion_skip_download", False)
-    proxy_host = getattr(shared.cmd_opts, 'facefusion_proxy', None)
     facefusion.globals.skip_download = skip_download        #args.skip_download
     facefusion.globals.headless = False                     #args.headless
     facefusion.globals.log_level = 'debug'                  #args.log_level
-    facefusion.globals.proxy_host = proxy_host
     # execution
     execution_providers = encode_execution_providers(onnxruntime.get_available_providers())
     facefusion.globals.execution_providers = decode_execution_providers(execution_providers)
@@ -78,12 +76,14 @@ def apply_args() -> None:
     facefusion.globals.temp_frame_quality = 100             #args.temp_frame_quality
     facefusion.globals.keep_temp = False                    #args.keep_temp
     # output creation
-    facefusion.globals.output_image_quality = 90            #args.output_image_quality
-    facefusion.globals.output_video_encoder = 'libx264'     #args.output_video_encoder
-    facefusion.globals.output_video_quality = 90            #args.output_video_quality
+    output_image_quality = shared.opts.data.get('face_fusion_image_quality', 90)
+    output_video_quality = shared.opts.data.get('face_fusion_video_quality', 90)
+    output_video_encoder = shared.opts.data.get('face_fusion_video_encoder', "libx264")
+    facefusion.globals.output_image_quality = output_image_quality              #args.output_image_quality
+    facefusion.globals.output_video_encoder = output_video_encoder              #args.output_video_encoder
+    facefusion.globals.output_video_quality = output_video_quality              #args.output_video_quality
     facefusion.globals.keep_fps = True                      #args.keep_fps
     facefusion.globals.skip_audio = False                   #args.skip_audio
-    
     
     # frame processors
     available_frame_processors = list_module_names('processors/frame/modules')
@@ -97,11 +97,14 @@ def apply_args() -> None:
     frame_processors_globals.face_swapper_model = 'inswapper_128'               #args.face_swapper_model
     facefusion.globals.face_recognizer_model = 'arcface_inswapper'
 
+
+    proxy_host = getattr(shared.cmd_opts, 'facefusion_proxy', None)
     config_save_folder = shared.opts.data.get("face_fusion_save_folder", "face-fusion")
     data_path = os.path.join(paths.data_path, "outputs", config_save_folder, datetime.now().strftime("%Y-%m-%d"))
     if not os.path.exists(data_path):
         os.makedirs(data_path)
     
+    facefusion.globals.proxy_host = proxy_host
     facefusion.globals.data_path = data_path
     facefusion.globals.ui_layouts = 'default'                                   #args.ui_layouts
     

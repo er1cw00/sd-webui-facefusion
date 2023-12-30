@@ -102,9 +102,45 @@ def on_ui_settings():
                             component_args={"choices": ["face-fusion", "img2img-images"]},
                             section=section))
     shared.opts.add_option("face_fusion_prongraphic_content_filtering",
+    shared.opts.add_option("face_fusion_image_quality", 
                            shared.OptionInfo(
                                default=True,
                                label="Enable adult content filtering",
                                component=gr.Checkbox,
                                component_args={"interactive": True},
+                               section=section))                               default=90, 
+                               label=wording.get('output_image_quality_slider_label'), 
+                               component=gr.Slider, 
+                               component_args={"minimum": 0, "maximum": 100, "step": 1}, 
+                               refresh=update_output_image_quality,
                                section=section))
+    shared.opts.add_option("face_fusion_video_quality", 
+                           shared.OptionInfo(
+                               default=90, 
+                               label=wording.get('output_video_quality_slider_label'), 
+                               component=gr.Slider, 
+                               component_args={"minimum": 0, "maximum": 100, "step": 1}, 
+                               refresh=update_output_video_quality,
+                               section=section))
+    shared.opts.add_option("face_fusion_video_encoder", 
+                           shared.OptionInfo(
+                               default='libx264', 
+                               label=wording.get('output_video_encoder_dropdown_label'), 
+                               component=gr.Dropdown, 
+                               component_args=lambda: {"choices": facefusion.choices.output_video_encoders},
+                               refresh=update_output_video_encoder,
+                               section=section))
+    
+def update_output_image_quality() -> None:
+    output_image_quality = shared.opts.data.get('face_fusion_image_quality', 90)
+    facefusion.globals.output_image_quality = output_image_quality
+
+def update_output_video_quality() -> None:
+    output_video_quality = shared.opts.data.get('face_fusion_video_quality', 90)
+    facefusion.globals.output_video_quality = output_video_quality
+    
+def update_output_video_encoder() -> None:
+    output_video_encoder = shared.opts.data.get('face_fusion_video_encoder', 90)
+    facefusion.globals.output_video_encoder = output_video_encoder
+
+
