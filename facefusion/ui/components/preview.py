@@ -12,7 +12,7 @@ from facefusion.face_analyser import get_average_face, clear_face_analyser
 from facefusion.content_analyser import analyse_frame
 from facefusion.processors.frame.core import load_frame_processor_module
 from facefusion.filesystem import is_image, is_video
-from facefusion.ui.typing import ComponentName, Update
+from facefusion.ui.typing import ComponentName
 from facefusion.ui.core import get_ui_component, register_ui_component
 
 PREVIEW_IMAGE : Optional[gradio.Image] = None
@@ -135,7 +135,7 @@ def clear_and_update_preview_image(frame_number : int = 0) -> gradio.Image:
 	return update_preview_image(frame_number)
 
 
-def update_preview_image(frame_number : int = 0) -> Update:
+def update_preview_image(frame_number : int = 0) -> gradio.Image:
 	conditional_append_reference_faces()
 	source_frames = read_static_images(facefusion.globals.source_paths)
 	source_face = get_average_face(source_frames)
@@ -153,7 +153,7 @@ def update_preview_image(frame_number : int = 0) -> Update:
 	return gradio.update(value = None)
 
 
-def update_preview_frame_slider() -> Update:
+def update_preview_frame_slider() -> gradio.Image:
 	if is_video(facefusion.globals.target_path):
 		video_frame_total = count_video_frame_total(facefusion.globals.target_path)
 		return gradio.update(maximum = video_frame_total, visible = True)

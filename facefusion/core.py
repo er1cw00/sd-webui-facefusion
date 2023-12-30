@@ -144,7 +144,6 @@ def pre_check() -> bool:
     return True
 
 def conditional_process() -> None:
-    print(f'conditional_process')
     conditional_append_reference_faces()
     for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
         if not frame_processor_module.pre_process('output'):
@@ -155,7 +154,6 @@ def conditional_process() -> None:
         process_video()
 
 def conditional_append_reference_faces() -> None:
-    print(f'conditional_append_reference_faces')
     if 'reference' in facefusion.globals.face_selector_mode and not get_reference_faces():
         source_frames = read_static_images(facefusion.globals.source_paths)
         source_face = get_average_face(source_frames)
@@ -241,19 +239,15 @@ def process_video() -> None:
 
     
 def facefusion_init() -> None:
-    print('facefusion_init >> ')
     apply_args()
     logger.init(facefusion.globals.log_level)
     limit_resources()
-    print('facefusion_init >> 1')
     if (not pre_check()
         or not content_analyser.pre_check()
         or not face_analyser.pre_check() 
         or not face_masker.pre_check()):
         return
-    print('facefusion_init >> 2')   
     for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
         if not frame_processor_module.pre_check():
             return
-    print('facefusion_init << ')
     return
