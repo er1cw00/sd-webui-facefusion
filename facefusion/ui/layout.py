@@ -1,9 +1,11 @@
 import os
 import json
 import gradio as gr
+import facefusion
 from pathlib import Path
 from modules import script_callbacks, shared,scripts
 from facefusion import wording
+from facefusion.typing import OutputVideoEncoder
 from facefusion.ui.components import about,frame_processors,frame_processors_options,execution,limit_resources,common_options,output_options
 from facefusion.ui.components import source,target,output
 from facefusion.ui.components import preview,trim_frame,face_selector,face_masker,face_analyser
@@ -25,8 +27,6 @@ def render() :
                 frame_processors_options.render()
             with gr.Blocks():
                 execution.render()
-            with gr.Blocks():
-                limit_resources.render()
             with gr.Blocks():
                 common_options.render()
         with gr.Column(scale = 2):
@@ -52,11 +52,11 @@ def listen() :
     frame_processors.listen()
     frame_processors_options.listen()
     execution.listen()
-    limit_resources.listen()
     common_options.listen()
     source.listen()
     target.listen()
     output.listen()
+    preview.listen()
     trim_frame.listen()
     face_selector.listen()
     face_masker.listen()
@@ -70,20 +70,22 @@ def on_ui_tabs():
 
 def on_ui_settings():
     section = ("face fusion", "Face Fusion")
-    shared.opts.add_option("face_fusion_thread_count", 
+    shared.opts.add_option("face_fusion_execution_thread_count", 
                            shared.OptionInfo(
                                default=4, 
                                label=wording.get('execution_thread_count_help'), 
                                component=gr.Slider, 
                                component_args={"minimum": 1, "maximum": 128, "step": 1}, 
+                               refresh=update_execution_thread_count,
                                section=section
                            ))
-    shared.opts.add_option("face_fusion_queue_count", 
+    shared.opts.add_option("face_fusion_execution_queue_count", 
                            shared.OptionInfo(
                                default=1, 
                                label=wording.get('execution_queue_count_help'), 
                                component=gr.Slider, 
                                component_args={"minimum": 1, "maximum": 32, "step": 1}, 
+                               refresh=update_execution_queue_count,
                                section=section
                            ))
     shared.opts.add_option("face_fusion_max_memory", 
@@ -92,6 +94,7 @@ def on_ui_settings():
                                label=wording.get('max_memory_help'), 
                                component=gr.Slider, 
                                component_args={"minimum": 0, "maximum": 128, "step": 1}, 
+                               refresh=update_execution_max_memory,
                                section=section
                            ))
     shared.opts.add_option("face_fusion_prongraphic_content_filtering",
@@ -133,6 +136,20 @@ def on_ui_settings():
                                component_args=lambda: {"choices": facefusion.choices.output_video_encoders},
                                refresh=update_output_video_encoder,
                                section=section))
+       
+    
+def update_execution_thread_count() -> None:
+    thread_count = shared.opts.data.get('face_fusion_execution_thread_count', 1)
+    facefusion.globals.execution_thread_count = thread_count
+    
+def update_execution_queue_count() -> None:
+    quene_count = shared.opts.data.get('face_fusion_execution_queue_count', 1)
+    facefusion.globals.execution_queue_count = quene_count
+    
+def update_execution_max_memory() -> None:
+    max_memory = shared.opts.data.get('face_fusion_max_memory', 0)
+    facefusion.globals.max_memory = max_memory  
+    
 def update_prongraphic_content_filtering() -> None:
     prongraphic_filtering = shared.opts.data.get('face_fusion_prongraphic_content_filtering', True)
     facefusion.globals.prongraphic_filtering = prongraphic_filtering

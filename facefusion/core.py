@@ -46,12 +46,16 @@ def apply_args() -> None:
     facefusion.globals.skip_download = skip_download        #args.skip_download
     facefusion.globals.headless = False                     #args.headless
     facefusion.globals.log_level = 'debug'                  #args.log_level
+    
     # execution
     execution_providers = encode_execution_providers(onnxruntime.get_available_providers())
+    thread_count = shared.opts.data.get('face_fusion_execution_thread_count', 1)
+    queue_count = shared.opts.data.get('face_fusion_execution_queue_count', 1)
+    max_memory = shared.opts.data.get('face_fusion_max_memory', 0)
     facefusion.globals.execution_providers = decode_execution_providers(execution_providers)
-    facefusion.globals.execution_thread_count = 1           #args.execution_thread_count
-    facefusion.globals.execution_queue_count = 1            #args.execution_queue_count
-    facefusion.globals.max_memory = 0                       #args.max_memory
+    facefusion.globals.execution_thread_count = thread_count       #args.execution_thread_count
+    facefusion.globals.execution_queue_count = queue_count         #args.execution_queue_count
+    facefusion.globals.max_memory = max_memory                     #args.max_memory
     # face analyser
     facefusion.globals.face_analyser_order = 'left-right'   #args.face_analyser_order
     facefusion.globals.face_analyser_age = None             #args.face_analyser_age
