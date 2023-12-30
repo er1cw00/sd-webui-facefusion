@@ -1,7 +1,9 @@
-from typing import Tuple, Optional
-import gradio
 
+import gradio
+import os
 import facefusion.globals
+from typing import Tuple, Optional
+from datetime import datetime
 from facefusion import wording
 from facefusion.core import limit_resources, conditional_process
 from facefusion.ui.core import get_ui_component
@@ -40,17 +42,11 @@ def render() -> None:
 
 
 def listen() -> None:
-	output_path_textbox = get_ui_component('output_path_textbox')
-	if output_path_textbox:
-		OUTPUT_START_BUTTON.click(start, inputs = output_path_textbox, outputs = [ OUTPUT_IMAGE, OUTPUT_VIDEO ])
+	OUTPUT_START_BUTTON.click(start, outputs = [ OUTPUT_IMAGE, OUTPUT_VIDEO ])
 	OUTPUT_CLEAR_BUTTON.click(clear, outputs = [ OUTPUT_IMAGE, OUTPUT_VIDEO ])
 
-
-def start(output_path : str) -> Tuple[gradio.Image, gradio.Video]:
-	print(f'start >> source paths : {facefusion.globals.source_paths}')
-	print(f'start >> target path : {facefusion.globals.target_path}')
-	print(f'start >> output path : {facefusion.globals.output_path}')
-	facefusion.globals.output_path = normalize_output_path(facefusion.globals.source_paths, facefusion.globals.target_path, output_path)
+def start() -> Tuple[gradio.Image, gradio.Video]:
+	facefusion.globals.output_path = normalize_output_path(facefusion.globals.source_paths, facefusion.globals.target_path, facefusion.globals.data_path)
 	limit_resources()
 	conditional_process()
 	if is_image(facefusion.globals.output_path):

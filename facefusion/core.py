@@ -11,8 +11,7 @@ import shutil
 import onnxruntime
 from datetime import datetime
 from argparse import ArgumentParser, HelpFormatter
-from modules import shared
-from modules.paths import data_path
+from modules import shared, paths
 
 import facefusion.choices
 import facefusion.globals
@@ -88,7 +87,7 @@ def apply_args() -> None:
     
     # frame processors
     available_frame_processors = list_module_names('processors/frame/modules')
-    facefusion.globals.frame_processors = ['face_swapper', 'face_enhancer']     #args.frame_processors
+    facefusion.globals.frame_processors = ['face_swapper']     #args.frame_processors
 
     frame_processors_globals.frame_enhancer_model = 'real_esrgan_x2plus'        #args.frame_enhancer_model
     frame_processors_globals.frame_enhancer_blend = 80                          #args.frame_enhancer_blend
@@ -99,13 +98,12 @@ def apply_args() -> None:
     facefusion.globals.face_recognizer_model = 'arcface_inswapper'
 
     config_save_folder = shared.opts.data.get("face_fusion_save_folder", "face-fusion")
-    output_path = os.path.join(data_path, "outputs", config_save_folder, datetime.now().strftime("%Y-%m-%d"))
-    print(f'output_path: {output_path}')
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
-        
-    facefusion.globals.ui_layouts = 'default'                                   #args.ui_layouts
+    data_path = os.path.join(paths.data_path, "outputs", config_save_folder, datetime.now().strftime("%Y-%m-%d"))
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
     
+    facefusion.globals.data_path = data_path
+    facefusion.globals.ui_layouts = 'default'                                   #args.ui_layouts
     
 
 def limit_resources() -> None:

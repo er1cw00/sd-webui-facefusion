@@ -28,8 +28,6 @@ def render() :
             with gr.Blocks():
                 limit_resources.render()
             with gr.Blocks():
-                output_options.render()
-            with gr.Blocks():
                 common_options.render()
         with gr.Column(scale = 2):
             with gr.Blocks():
@@ -55,7 +53,6 @@ def listen() :
     frame_processors_options.listen()
     execution.listen()
     limit_resources.listen()
-    output_options.listen()
     common_options.listen()
     source.listen()
     target.listen()
