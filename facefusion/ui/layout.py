@@ -94,6 +94,14 @@ def on_ui_settings():
                                component_args={"minimum": 0, "maximum": 128, "step": 1}, 
                                section=section
                            ))
+    shared.opts.add_option("face_fusion_prongraphic_content_filtering",
+                           shared.OptionInfo(
+                               default=True,
+                               label="Enable adult content filtering",
+                               component=gr.Checkbox,
+                               component_args={"interactive": True},
+                               refresh=update_prongraphic_content_filtering,
+                               section=section))
     shared.opts.add_option("face_fusion_save_folder",
                         shared.OptionInfo(
                             default="face-fusion",
@@ -101,14 +109,9 @@ def on_ui_settings():
                             component=gr.Radio,
                             component_args={"choices": ["face-fusion", "img2img-images"]},
                             section=section))
-    shared.opts.add_option("face_fusion_prongraphic_content_filtering",
     shared.opts.add_option("face_fusion_image_quality", 
                            shared.OptionInfo(
-                               default=True,
-                               label="Enable adult content filtering",
-                               component=gr.Checkbox,
-                               component_args={"interactive": True},
-                               section=section))                               default=90, 
+                               default=90, 
                                label=wording.get('output_image_quality_slider_label'), 
                                component=gr.Slider, 
                                component_args={"minimum": 0, "maximum": 100, "step": 1}, 
@@ -130,6 +133,9 @@ def on_ui_settings():
                                component_args=lambda: {"choices": facefusion.choices.output_video_encoders},
                                refresh=update_output_video_encoder,
                                section=section))
+def update_prongraphic_content_filtering() -> None:
+    prongraphic_filtering = shared.opts.data.get('face_fusion_prongraphic_content_filtering', True)
+    facefusion.globals.prongraphic_filtering = prongraphic_filtering
     
 def update_output_image_quality() -> None:
     output_image_quality = shared.opts.data.get('face_fusion_image_quality', 90)

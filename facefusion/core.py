@@ -99,12 +99,14 @@ def apply_args() -> None:
 
 
     proxy_host = getattr(shared.cmd_opts, 'facefusion_proxy', None)
+    prongraphic_filtering = shared.opts.data.get('face_fusion_max_memory', True)
     config_save_folder = shared.opts.data.get("face_fusion_save_folder", "face-fusion")
     data_path = os.path.join(paths.data_path, "outputs", config_save_folder, datetime.now().strftime("%Y-%m-%d"))
     if not os.path.exists(data_path):
         os.makedirs(data_path)
     
     facefusion.globals.proxy_host = proxy_host
+    facefusion.globals.prongraphic_filtering = prongraphic_filtering
     facefusion.globals.data_path = data_path
     facefusion.globals.ui_layouts = 'default'                                   #args.ui_layouts
     
@@ -168,9 +170,7 @@ def conditional_append_reference_faces() -> None:
     
 
 def process_image() -> None:
-    prongraphic_filtering = shared.opts.data.get('face_fusion_prongraphic_content_filtering', True)
-    print(f'prongraphic_filtering: {prongraphic_filtering}')
-    if prongraphic_filtering and analyse_image(facefusion.globals.target_path):
+    if facefusion.globals.prongraphic_filtering and analyse_image(facefusion.globals.target_path):
         return
     shutil.copy2(facefusion.globals.target_path, facefusion.globals.output_path)
     print(f'source: {facefusion.globals.source_paths}')
@@ -193,8 +193,7 @@ def process_image() -> None:
 
 
 def process_video() -> None:
-    prongraphic_filtering = shared.opts.data.get('face_fusion_prongraphic_content_filtering', True)
-    if prongraphic_filtering and analyse_video(facefusion.globals.target_path, facefusion.globals.trim_frame_start, facefusion.globals.trim_frame_end):
+    if facefusion.globals.prongraphic_filtering and analyse_video(facefusion.globals.target_path, facefusion.globals.trim_frame_start, facefusion.globals.trim_frame_end):
         return
     fps = detect_fps(facefusion.globals.target_path) if facefusion.globals.keep_fps else 25.0
     # create temp
