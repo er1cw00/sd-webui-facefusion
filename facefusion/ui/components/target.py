@@ -55,7 +55,6 @@ def update(file : File) -> Tuple[Update, Update]:
 	clear_static_faces()
 	if file and is_image(file.name):
 		facefusion.globals.target_path = file.name
-		print(f'start >> target path : {facefusion.globals.target_path}')
 		return gradio.update(value = file.name, visible = True), gradio.update(value = None, visible = False)
 	if file and is_video(file.name):
 		facefusion.globals.target_path = file.name
