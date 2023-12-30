@@ -1,7 +1,6 @@
 import argparse
 
 def preload(parser: argparse.ArgumentParser):
-    print('facefusion preload')
     parser.add_argument(
         "--facefusion-skip-download",
         action="store_true",

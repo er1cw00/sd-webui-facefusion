@@ -12,26 +12,26 @@ from facefusion.filesystem import is_file
 
 
 def conditional_download(download_directory_path : str, urls : List[str]) -> None:
-	with ThreadPoolExecutor() as executor:
-		for url in urls:
-			executor.submit(get_download_size, url)
-	for url in urls:
-		download_file_path = os.path.join(download_directory_path, os.path.basename(url))
-		initial = os.path.getsize(download_file_path) if is_file(download_file_path) else 0
-		total = get_download_size(url)
-		if initial < total:
-			with tqdm(total = total, initial = initial, desc = wording.get('downloading'), unit = 'B', unit_scale = True, unit_divisor = 1024, ascii = ' =', disable = facefusion.globals.log_level in [ 'warn', 'error' ]) as progress:
-				print(f'download url: {url}')
-				curl_cmd = ['curl']
-				if facefusion.globals.proxy_host:
-					curl_cmd = curl_cmd + ['-x', facefusion.globals.proxy_host]
-				curl_cmd = curl_cmd + ['--create-dirs', '--silent', '--insecure', '--location', '--continue-at', '-', '--output', download_file_path, url]
-				subprocess.Popen(curl_cmd)
-				current = initial
-				while current < total:
-					if is_file(download_file_path):
-						current = os.path.getsize(download_file_path)
-						progress.update(current - progress.n)
+    with ThreadPoolExecutor() as executor:
+        for url in urls:
+            executor.submit(get_download_size, url)
+    for url in urls:
+        #print(f'download url: {url}')
+        download_file_path = os.path.join(download_directory_path, os.path.basename(url))
+        initial = os.path.getsize(download_file_path) if is_file(download_file_path) else 0
+        total = get_download_size(url)
+        if initial < total:
+            with tqdm(total = total, initial = initial, desc = wording.get('downloading'), unit = 'B', unit_scale = True, unit_divisor = 1024, ascii = ' =', disable = facefusion.globals.log_level in [ 'warn', 'error' ]) as progress:
+                curl_cmd = ['curl']
+                if facefusion.globals.proxy_host:
+                    curl_cmd = curl_cmd + ['-x', facefusion.globals.proxy_host]
+                curl_cmd = curl_cmd + ['--create-dirs', '--silent', '--insecure', '--location', '--continue-at', '-', '--output', download_file_path, url]
+                subprocess.Popen(curl_cmd)
+                current = initial
+                while current < total:
+                    if is_file(download_file_path):
+                        current = os.path.getsize(download_file_path)
+                        progress.update(current - progress.n)
 
 
 @lru_cache(maxsize = None)
