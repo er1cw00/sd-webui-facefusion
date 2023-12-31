@@ -6,7 +6,7 @@ import facefusion.choices
 from facefusion import wording
 from facefusion.typing import FaceMaskType, FaceMaskRegion
 from facefusion.ui.core import register_ui_component
-from facefusion.ui.typing import Update
+
 
 FACE_MASK_TYPES_CHECKBOX_GROUP : Optional[gradio.CheckboxGroup] = None
 FACE_MASK_BLUR_SLIDER : Optional[gradio.Slider] = None
@@ -100,7 +100,7 @@ def listen() -> None:
 		face_mask_padding_slider.change(update_face_mask_padding, inputs = face_mask_padding_sliders)
 
 
-def update_face_mask_type(face_mask_types : List[FaceMaskType]) -> Tuple[Update, Update, Update]:
+def update_face_mask_type(face_mask_types : List[FaceMaskType]) -> Tuple[gradio.CheckboxGroup, gradio.Group, gradio.CheckboxGroup]:
 	if not face_mask_types:
 		face_mask_types = facefusion.choices.face_mask_types
 	facefusion.globals.face_mask_types = face_mask_types
@@ -117,7 +117,7 @@ def update_face_mask_padding(face_mask_padding_top : int, face_mask_padding_righ
 	facefusion.globals.face_mask_padding = (face_mask_padding_top, face_mask_padding_right, face_mask_padding_bottom, face_mask_padding_left)
 
 
-def update_face_mask_regions(face_mask_regions : List[FaceMaskRegion]) -> Update:
+def update_face_mask_regions(face_mask_regions : List[FaceMaskRegion]) -> gradio.CheckboxGroup:
 	if not face_mask_regions:
 		face_mask_regions = facefusion.choices.face_mask_regions
 	facefusion.globals.face_mask_regions = face_mask_regions

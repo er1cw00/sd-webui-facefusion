@@ -3,7 +3,7 @@ import gradio
 
 import facefusion.globals
 from facefusion import wording
-from facefusion.ui.typing import File, Update
+from facefusion.ui.typing import File
 from facefusion.filesystem import are_images
 from facefusion.ui.core import register_ui_component
 
@@ -40,7 +40,7 @@ def listen() -> None:
 	SOURCE_FILE.change(update, inputs = SOURCE_FILE, outputs = SOURCE_IMAGE)
 
 
-def update(files : List[File]) -> Update:
+def update(files : List[File]) -> gradio.Image:
 	file_names = [ file.name for file in files ] if files else None
 	if are_images(file_names):
 		facefusion.globals.source_paths = file_names

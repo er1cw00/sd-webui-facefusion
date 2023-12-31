@@ -11,7 +11,7 @@ from facefusion.face_analyser import get_many_faces
 from facefusion.typing import Frame, FaceSelectorMode
 from facefusion.filesystem import is_image, is_video
 from facefusion.ui.core import get_ui_component, register_ui_component
-from facefusion.ui.typing import ComponentName, Update
+from facefusion.ui.typing import ComponentName
 
 FACE_SELECTOR_MODE_DROPDOWN : Optional[gradio.Dropdown] = None
 REFERENCE_FACE_POSITION_GALLERY : Optional[gradio.Gallery] = None
@@ -97,7 +97,7 @@ def listen() -> None:
 		preview_frame_slider.release(update_reference_position_gallery, outputs = REFERENCE_FACE_POSITION_GALLERY)
 
 
-def update_face_selector_mode(face_selector_mode : FaceSelectorMode) -> Tuple[Update, Update]:
+def update_face_selector_mode(face_selector_mode : FaceSelectorMode) -> Tuple[gradio.Gallery, gradio.Slider]:
 	if face_selector_mode == 'reference':
 		facefusion.globals.face_selector_mode = face_selector_mode
 		return gradio.update(visible = True), gradio.update(visible = True)
@@ -109,7 +109,7 @@ def update_face_selector_mode(face_selector_mode : FaceSelectorMode) -> Tuple[Up
 		return gradio.update(visible = False), gradio.update(visible = False)
 
 
-def clear_and_update_reference_face_position(event : gradio.SelectData) -> Update:
+def clear_and_update_reference_face_position(event : gradio.SelectData) -> gradio.Gallery:
 	clear_reference_faces()
 	clear_static_faces()
 	update_reference_face_position(event.index)
@@ -128,13 +128,13 @@ def update_reference_frame_number(reference_frame_number : int) -> None:
 	facefusion.globals.reference_frame_number = reference_frame_number
 
 
-def clear_and_update_reference_position_gallery() -> Update:
+def clear_and_update_reference_position_gallery() -> gradio.Gallery:
 	clear_reference_faces()
 	clear_static_faces()
 	return update_reference_position_gallery()
 
 
-def update_reference_position_gallery() -> Update:
+def update_reference_position_gallery() -> gradio.Gallery:
 	gallery_frames = []
 	if is_image(facefusion.globals.target_path):
 		reference_frame = read_static_image(facefusion.globals.target_path)

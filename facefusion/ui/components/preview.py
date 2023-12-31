@@ -17,7 +17,6 @@ from facefusion.ui.core import get_ui_component, register_ui_component
 
 PREVIEW_IMAGE : Optional[gradio.Image] = None
 PREVIEW_FRAME_SLIDER : Optional[gradio.Slider] = None
-PREVIEW_CHECKBOX : Optional[gradio.Checkbox] = None
 
 def render() -> None:
 	global PREVIEW_IMAGE
@@ -54,9 +53,7 @@ def render() -> None:
 		preview_frame_slider_args['visible'] = True
 	PREVIEW_IMAGE = gradio.Image(**preview_image_args)
 	PREVIEW_FRAME_SLIDER = gradio.Slider(**preview_frame_slider_args)
-	PREVIEW_CHECKBOX = gradio.Checkbox(label='Auto Preview', value=True, interactive=True)
 	register_ui_component('preview_frame_slider', PREVIEW_FRAME_SLIDER)
-	register_ui_component('preview_auto_checkbox', PREVIEW_CHECKBOX)
 
 
 def listen() -> None:

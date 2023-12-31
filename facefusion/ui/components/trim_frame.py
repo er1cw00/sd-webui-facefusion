@@ -6,7 +6,6 @@ from facefusion import wording
 from facefusion.vision import count_video_frame_total
 from facefusion.filesystem import is_video
 from facefusion.ui.core import get_ui_component
-from facefusion.ui.typing import Update
 
 TRIM_FRAME_START_SLIDER : Optional[gradio.Slider] = None
 TRIM_FRAME_END_SLIDER : Optional[gradio.Slider] = None
@@ -54,7 +53,7 @@ def listen() -> None:
 			getattr(target_video, method)(remote_update, outputs = [ TRIM_FRAME_START_SLIDER, TRIM_FRAME_END_SLIDER ])
 
 
-def remote_update() -> Tuple[Update, Update]:
+def remote_update() -> Tuple[gradio.Slider, gradio.Slider]:
 	if is_video(facefusion.globals.target_path):
 		video_frame_total = count_video_frame_total(facefusion.globals.target_path)
 		facefusion.globals.trim_frame_start = None

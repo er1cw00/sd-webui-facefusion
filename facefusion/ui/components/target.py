@@ -4,7 +4,7 @@ import gradio
 import facefusion.globals
 from facefusion import wording
 from facefusion.face_store import clear_static_faces, clear_reference_faces
-from facefusion.ui.typing import File, Update
+from facefusion.ui.typing import File
 from facefusion.filesystem import is_image, is_video
 from facefusion.ui.core import register_ui_component
 
@@ -50,7 +50,7 @@ def listen() -> None:
 	TARGET_FILE.change(update, inputs = TARGET_FILE, outputs = [ TARGET_IMAGE, TARGET_VIDEO ])
 
 
-def update(file : File) -> Tuple[Update, Update]:
+def update(file : File) -> Tuple[gradio.Image, gradio.Video]:
 	clear_reference_faces()
 	clear_static_faces()
 	if file and is_image(file.name):

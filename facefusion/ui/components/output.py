@@ -7,7 +7,6 @@ from datetime import datetime
 from facefusion import wording
 from facefusion.core import limit_resources, conditional_process
 from facefusion.ui.core import get_ui_component
-from facefusion.ui.typing import Update
 from facefusion.normalizer import normalize_output_path
 from facefusion.filesystem import is_image, is_video, clear_temp
 
@@ -56,7 +55,7 @@ def start() -> Tuple[gradio.Image, gradio.Video]:
 	return gradio.update(), gradio.update()
 
 
-def clear() -> Tuple[Update, Update]:
+def clear() -> Tuple[gradio.Image, gradio.Video]:
 	if facefusion.globals.target_path:
 		clear_temp(facefusion.globals.target_path)
 	return gradio.update(value = None), gradio.update(value = None)

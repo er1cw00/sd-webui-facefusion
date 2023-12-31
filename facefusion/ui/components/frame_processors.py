@@ -6,7 +6,7 @@ from facefusion import wording
 from facefusion.processors.frame.core import load_frame_processor_module, clear_frame_processors_modules
 from facefusion.filesystem import list_module_names
 from facefusion.ui.core import register_ui_component
-from facefusion.ui.typing import Update
+
 
 FRAME_PROCESSORS_CHECKBOX_GROUP : Optional[gradio.CheckboxGroup] = None
 
@@ -26,8 +26,7 @@ def listen() -> None:
 	FRAME_PROCESSORS_CHECKBOX_GROUP.change(fn=update_frame_processors, inputs = FRAME_PROCESSORS_CHECKBOX_GROUP, outputs = FRAME_PROCESSORS_CHECKBOX_GROUP)
 
 
-def update_frame_processors(frame_processors : List[str]) -> Update:
-	print(f'update_frame_processors >>')
+def update_frame_processors(frame_processors : List[str]) -> gradio.CheckboxGroup:
 	facefusion.globals.frame_processors = frame_processors
 	clear_frame_processors_modules()
 	for frame_processor in frame_processors:

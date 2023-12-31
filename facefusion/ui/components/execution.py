@@ -4,7 +4,6 @@ import onnxruntime
 
 import facefusion.globals
 from facefusion import wording
-from facefusion.ui.typing import Update
 from facefusion.face_analyser import clear_face_analyser
 from facefusion.processors.frame.core import clear_frame_processors_modules
 from facefusion.execution_helper import encode_execution_providers, decode_execution_providers
@@ -26,7 +25,7 @@ def listen() -> None:
 	EXECUTION_PROVIDERS_CHECKBOX_GROUP.change(update_execution_providers, inputs = EXECUTION_PROVIDERS_CHECKBOX_GROUP, outputs = EXECUTION_PROVIDERS_CHECKBOX_GROUP)
 
 
-def update_execution_providers(execution_providers : List[str]) -> Update:
+def update_execution_providers(execution_providers : List[str]) -> gradio.CheckboxGroup:
 	clear_face_analyser()
 	clear_frame_processors_modules()
 	if not execution_providers:
