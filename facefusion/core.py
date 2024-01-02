@@ -8,6 +8,7 @@ import sys
 import warnings
 import platform
 import shutil
+import tempfile
 import onnxruntime
 from datetime import datetime
 from argparse import ArgumentParser, HelpFormatter
@@ -46,7 +47,6 @@ def apply_args() -> None:
     facefusion.globals.skip_download = skip_download        #args.skip_download
     facefusion.globals.headless = False                     #args.headless
     facefusion.globals.log_level = 'debug'                  #args.log_level
-    
     # execution
     execution_providers = encode_execution_providers(onnxruntime.get_available_providers())
     thread_count = shared.opts.data.get('face_fusion_execution_thread_count', 1)
@@ -92,7 +92,6 @@ def apply_args() -> None:
     # frame processors
     available_frame_processors = list_module_names('processors/frame/modules')
     facefusion.globals.frame_processors = ['face_swapper']     #args.frame_processors
-
     frame_processors_globals.frame_enhancer_model = 'real_esrgan_x2plus'        #args.frame_enhancer_model
     frame_processors_globals.frame_enhancer_blend = 80                          #args.frame_enhancer_blend
     frame_processors_globals.face_debugger_items = ['kps', 'face-mask']         #args.face_debugger_items
@@ -104,14 +103,24 @@ def apply_args() -> None:
 
     proxy_host = getattr(shared.cmd_opts, 'facefusion_proxy', None)
     prongraphic_filtering = shared.opts.data.get('face_fusion_max_memory', True)
-    config_save_folder = shared.opts.data.get("face_fusion_save_folder", "face-fusion")
-    data_path = os.path.join(paths.data_path, "outputs", config_save_folder, datetime.now().strftime("%Y-%m-%d"))
-    if not os.path.exists(data_path):
-        os.makedirs(data_path)
-    
     facefusion.globals.proxy_host = proxy_host
     facefusion.globals.prongraphic_filtering = prongraphic_filtering
-    facefusion.globals.data_path = data_path
+    
+    flag = shared.opts.data.get('face_fusion_output_path_with_datetime', False)
+    default_dir = os.path.join(paths.data_path, "outputs/facefusion")
+    output_dir = shared.opts.data.get("face_fusion_output_path", default_dir)
+    if flag :
+        output_dir = os.path.join(output_dir, datetime.now().strftime("%Y-%m-%d"))
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    facefusion.globals.output_dir = output_dir
+    
+    tmp_dir = tempfile.gettempdir()
+    upload_dir = shared.opts.data.get("face_fusion_upload_path", tmp_dir)
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir)
+    facefusion.globals.upload_dir = upload_dir
+    
     facefusion.globals.ui_layouts = 'default'                                   #args.ui_layouts
     
 

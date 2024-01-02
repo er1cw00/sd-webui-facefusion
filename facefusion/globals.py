@@ -7,7 +7,8 @@ from facefusion.typing import LogLevel, FaceSelectorMode, FaceAnalyserOrder, Fac
 source_paths : Optional[List[str]] = None
 target_path : Optional[str] = None
 output_path : Optional[str] = None
-data_path : Optional[str] = None 
+output_dir : Optional[str] = None 
+upload_dir : Optional[str] = None 
 output_image_format : Optional[str] = 'jpg'
 # misc
 skip_download : Optional[bool] = None

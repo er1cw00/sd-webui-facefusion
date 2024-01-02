@@ -113,6 +113,24 @@ def on_ui_settings():
                             component_args=lambda: {"choices": ['jpn', 'png']},
                             refresh=update_output_image_format,
                             section=section))
+    shared.opts.add_option("face_fusion_output_dir_with_datetime",
+                           shared.OptionInfo(
+                               default=False,
+                               label="Add datetime to output path",
+                               component=gr.Checkbox,
+                               component_args={"interactive": True},
+                               section=section))
+    output_path = os.path.join(paths.data_path, "outputs", "facefusion")
+    shared.opts.add_option("face_fusion_output_path",
+                           shared.OptionInfo(
+                                default=output_path, 
+                                label='Path where output images or videos will be saved',
+                                section=section))
+    shared.opts.add_option("face_fusion_upload_path",
+                           shared.OptionInfo(
+                                default='', 
+                                label='Path where upload images or videos will be saved',
+                                section=section))
     shared.opts.add_option("face_fusion_image_quality", 
                            shared.OptionInfo(
                                default=90, 
@@ -167,4 +185,7 @@ def update_output_video_encoder() -> None:
     output_video_encoder = shared.opts.data.get('face_fusion_video_encoder', 90)
     facefusion.globals.output_video_encoder = output_video_encoder
 
-
+def update_output_image_format() -> None: 
+    output_image_format = shared.opts.data.get('face_fusion_image_format', 'jpg')
+    facefusion.globals.output_image_format = output_image_format
+    

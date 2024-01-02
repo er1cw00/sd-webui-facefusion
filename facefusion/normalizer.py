@@ -1,24 +1,23 @@
 from typing import List, Optional
 import os
-
-from facefusion.filesystem import is_file, is_directory
+import facefusion
+from datetime import datetime
+from facefusion.filesystem import is_file, is_directory, is_image, is_video
 from facefusion.typing import Padding
 
-
-def normalize_output_path(source_paths : List[str], target_path : str, output_path : str) -> Optional[str]:
-	if is_file(target_path) and is_directory(output_path):
-		target_name, target_extension = os.path.splitext(os.path.basename(target_path))
-		if source_paths and is_file(source_paths[0]):
-			source_name, _ = os.path.splitext(os.path.basename(source_paths[0]))
-			return os.path.join(output_path, source_name + '-' + target_name + target_extension)
-		return os.path.join(output_path, target_name + target_extension)
-	if is_file(target_path) and output_path:
-		_, target_extension = os.path.splitext(os.path.basename(target_path))
-		output_name, output_extension = os.path.splitext(os.path.basename(output_path))
-		output_directory_path = os.path.dirname(output_path)
-		if is_directory(output_directory_path) and output_extension:
-			return os.path.join(output_directory_path, output_name + target_extension)
+def normalize_output_path(target_path : str) -> Optional[str]:
+	if not is_file(target_path):
 		return None
+	output_path = None
+	filename = None
+	now = datetime.now()
+	if is_image(target_path):
+		image_suffix = facefusion.globals.output_image_format
+		filename = f'image_{int(now.timestamp() * 1000)}.{image_suffix}'
+	elif is_video(target_path):
+		filename = f'video_{int(now.timestamp() * 1000)}.mp4'
+	if filename != None:
+		output_path = os.path.join(facefusion.globals.output_dir, filename)
 	return output_path
 
 
