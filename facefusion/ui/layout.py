@@ -3,7 +3,7 @@ import json
 import gradio as gr
 import facefusion
 from pathlib import Path
-from modules import script_callbacks, shared,scripts
+from modules import script_callbacks, shared,scripts,paths
 from facefusion import wording
 from facefusion.typing import OutputVideoEncoder
 from facefusion.ui.components import about,frame_processors,frame_processors_options,execution,limit_resources,common_options,output_options
@@ -105,12 +105,13 @@ def on_ui_settings():
                                component_args={"interactive": True},
                                refresh=update_prongraphic_content_filtering,
                                section=section))
-    shared.opts.add_option("face_fusion_save_folder",
+    shared.opts.add_option("face_fusion_image_format", 
                         shared.OptionInfo(
-                            default="face-fusion",
-                            label="Folder name where output images or videos will be saved",
-                            component=gr.Radio,
-                            component_args={"choices": ["face-fusion", "img2img-images"]},
+                            default='jpg', 
+                            label=wording.get('output_image_format'), 
+                            component=gr.Dropdown, 
+                            component_args=lambda: {"choices": ['jpn', 'png']},
+                            refresh=update_output_image_format,
                             section=section))
     shared.opts.add_option("face_fusion_image_quality", 
                            shared.OptionInfo(

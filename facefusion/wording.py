@@ -42,6 +42,7 @@ WORDING =\
 	'execution_queue_count_help': 'specify the number of execution queries',
 	'skip_download_help': 'omit automate downloads and lookups',
 	'headless_help': 'run the program in headless mode',
+	'output_image_format': 'output image format',
 	'log_level_help': 'choose from the available log levels',
 	'creating_temp': 'Creating temporary resources',
 	'extracting_frames_fps': 'Extracting frames with {fps} FPS',
