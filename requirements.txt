@@ -7,5 +7,5 @@ onnxruntime>=1.16.0
 opencv-python>=4.8.1.78
 psutil>=5.9.5
 realesrgan==0.3.0
-torch>=2.0t.1
+torch>=2.0.1
 tqdm>=4.65.0
