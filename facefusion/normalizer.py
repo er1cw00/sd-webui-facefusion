@@ -5,10 +5,25 @@ from datetime import datetime
 from facefusion.filesystem import is_file, is_directory, is_image, is_video
 from facefusion.typing import Padding
 
-def normalize_output_path(target_path : str) -> Optional[str]:
-	if not is_file(target_path):
-		return None
-	output_path = None
+def check_output_path(target_path : str, output_path: str):
+	if output_path == None:
+		return False
+	dir, filename = os.path.split(output_path)
+	if not os.path.isdir(dir):
+		return False
+	_, target_extension = os.path.splitext(os.path.basename(target_path))
+	_, output_extension = os.path.splitext(filename)
+	if target_extension in ['.jpg', '.jpeg', '.png', '.bmp']:
+		if output_extension not in ['.jpg', '.jpeg', '.png']:
+			return False
+	elif target_extension in ['.mp4', '.ogg', '.avi', '.mpg', '.mov']:
+		if output_extension not in ['.mp4', '.mov']:
+			return False
+	return True
+
+def normalize_output_path(target_path : str, output_path: str) -> Optional[str]:
+	if not is_file(target_path) or check_output_path(target_path, output_path):
+		return output_path
 	filename = None
 	now = datetime.now()
 	if is_image(target_path):

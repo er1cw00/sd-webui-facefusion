@@ -11,7 +11,7 @@ from modules.api.models import *
 from modules.call_queue import queue_lock
 from facefusion import metadata, logger, wording, choices, globals
 from facefusion.core import conditional_process
-from facefusion.normalizer import normalize_output_path
+from facefusion.normalizer import normalize_output_path, check_output_path
 from facefusion.filesystem import list_module_names, is_file
 from facefusion.execution_helper import encode_execution_providers, decode_execution_providers
 from facefusion.processors.frame.core import get_frame_processors_modules
@@ -26,6 +26,7 @@ class FrameProcessorRequest(BaseModel):
 class FrameProcessRequest(BaseModel):
     sources: List[str]
     target: str
+    output: Optional[str]
     providers: List[str]
     processors: List[FrameProcessorRequest]
     face_selector: str = 'reference'
@@ -91,9 +92,11 @@ def facefusion_api(_: gr.Blocks, app: FastAPI):
         success, message = set_parameter(req)
         if not success:
             raise HTTPException(status_code=422, detail=message)
-        globals.output_path = normalize_output_path(globals.target_path)
+        globals.output_path = normalize_output_path(globals.target_path, globals.output_path)
+        print(f'processors: {globals.frame_processors}')
         conditional_process()      
-        response = FrameProcessResponse(output=globals.output_path, )
+        response = FrameProcessResponse(output=globals.output_path)
+        globals.output_path = None
         print(f'frame_process <<')
         return response
         
@@ -117,7 +120,13 @@ def facefusion_api(_: gr.Blocks, app: FastAPI):
             globals.target_path = target_path
         else:
             return (False, 'No target image or video')
-
+        
+        if req.output.startswith('file://'):
+            req.output = req.output[7:]
+        if not check_output_path(globals.target_path, req.output):
+            return (False, "Unknown output path")
+        globals.output_path = req.output
+        
         req.providers = decode_execution_providers(req.providers)
         if len(req.providers) == 0:
             return (False, 'No executor providers')
@@ -125,7 +134,7 @@ def facefusion_api(_: gr.Blocks, app: FastAPI):
         if req.face_selector not in choices.face_selector_modes:
             return (False, 'Unknown face selector')
         globals.face_selector_mode = req.face_selector
-        if req.face_refer_distance < 0.0 and req.face_refer_distance > 1.0:
+        if req.face_refer_distance < 0.0 and req.face_refer_distance > 1.5:
             return (False, 'Unknown face reference distable')
         globals.reference_face_distance = req.face_refer_distance
         req.face_mask_types = [t for t in req.face_mask_types if t in choices.face_mask_types] 
@@ -191,6 +200,7 @@ def facefusion_api(_: gr.Blocks, app: FastAPI):
                 frame_processors_globals.frame_enhancer_blend = processor.blend
             else:    
                 return (False, 'Unknown frame processor: {process.name}')
+            globals.frame_processors = processors;
         return (True, '')
 
             
