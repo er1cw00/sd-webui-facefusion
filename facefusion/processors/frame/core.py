@@ -3,7 +3,7 @@ import importlib
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from queue import Queue
 from types import ModuleType
-from typing import Any, List
+from typing import Any, List, Dict
 from tqdm import tqdm
 
 import facefusion.globals
@@ -11,7 +11,8 @@ from facefusion.typing import Process_Frames
 from facefusion.execution_helper import encode_execution_providers
 from facefusion import logger, wording
 
-FRAME_PROCESSORS_MODULES : List[ModuleType] = []
+#FRAME_PROCESSORS_MODULES : List[ModuleType] = []
+FRAME_PROCESSORS_MODULES : Dict[str, ModuleType] = {}
 FRAME_PROCESSORS_METHODS =\
 [
 	'get_frame_processor',
@@ -47,21 +48,14 @@ def load_frame_processor_module(frame_processor : str) -> Any:
 
 def get_frame_processors_modules(frame_processors : List[str]) -> List[ModuleType]:
 	global FRAME_PROCESSORS_MODULES
-
-	if not FRAME_PROCESSORS_MODULES:
-		for frame_processor in frame_processors:
-			frame_processor_module = load_frame_processor_module(frame_processor)
-			FRAME_PROCESSORS_MODULES.append(frame_processor_module)
-	return FRAME_PROCESSORS_MODULES
-
-
-def clear_frame_processors_modules() -> None:
-	global FRAME_PROCESSORS_MODULES
-
-	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
-		frame_processor_module.clear_frame_processor()
-	FRAME_PROCESSORS_MODULES = []
-
+	modules = []
+	for frame_processor in frame_processors:
+		module = FRAME_PROCESSORS_MODULES.get(frame_processor, None)
+		if module == None:
+			module = load_frame_processor_module(frame_processor)
+			FRAME_PROCESSORS_MODULES[frame_processor] = module
+		modules.append(module)
+	return modules
 
 def multi_process_frames(source_paths : List[str], temp_frame_paths : List[str], process_frames : Process_Frames) -> None:
 	with tqdm(total = len(temp_frame_paths), desc = wording.get('processing'), unit = 'frame', ascii = ' =', disable = facefusion.globals.log_level in [ 'warn', 'error' ]) as progress:
