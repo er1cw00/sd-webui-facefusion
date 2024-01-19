@@ -114,13 +114,6 @@ def on_ui_settings():
                             component_args=lambda: {"choices": ['jpn', 'png']},
                             refresh=update_output_image_format,
                             section=section))
-    shared.opts.add_option("face_fusion_output_dir_with_datetime",
-                           shared.OptionInfo(
-                               default=False,
-                               label="Add datetime to output path",
-                               component=gr.Checkbox,
-                               component_args={"interactive": True},
-                               section=section))
     output_path = os.path.join(paths.data_path, "outputs", "facefusion")
     shared.opts.add_option("face_fusion_output_path",
                            shared.OptionInfo(
