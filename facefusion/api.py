@@ -31,7 +31,7 @@ class FrameProcessRequest(BaseModel):
     processors: List[FrameProcessorRequest]
     face_selector: str = 'reference'
     face_refer_distance: float = 0.6
-    face_mask_types: List[str] = ['bbox']
+    face_mask_types: List[str] = ['box']
     face_mask_blur: float = 0.3
     face_analyse_order:str = 'left-right'
     face_analyse_age:Optional[str] = None
@@ -43,7 +43,8 @@ class FrameProcessRequest(BaseModel):
         
         
 class FrameProcessResponse(BaseModel):
-    output: str
+    output: Optional[str]
+    detail: Optional[str]
     
 def facefusion_api(_: gr.Blocks, app: FastAPI):
     
@@ -120,13 +121,11 @@ def facefusion_api(_: gr.Blocks, app: FastAPI):
             globals.target_path = target_path
         else:
             return (False, 'No target image or video')
-        
         if req.output.startswith('file://'):
             req.output = req.output[7:]
         if not check_output_path(globals.target_path, req.output):
             return (False, "Unknown output path")
         globals.output_path = req.output
-        
         req.providers = decode_execution_providers(req.providers)
         if len(req.providers) == 0:
             return (False, 'No executor providers')
