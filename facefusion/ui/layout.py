@@ -1,6 +1,7 @@
 import os
 import json
 import gradio as gr
+import tempfile
 import facefusion
 from pathlib import Path
 from modules import script_callbacks, shared,scripts,paths
@@ -128,7 +129,7 @@ def on_ui_settings():
                                 section=section))
     shared.opts.add_option("face_fusion_upload_path",
                            shared.OptionInfo(
-                                default='', 
+                                default=tempfile.gettempdir(), 
                                 label='Path where upload images or videos will be saved',
                                 section=section))
     shared.opts.add_option("face_fusion_image_quality", 

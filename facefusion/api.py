@@ -112,7 +112,6 @@ def facefusion_api(_: gr.Blocks, app: FastAPI):
         if len(sources) == 0:
             return (False, 'No source images')
         globals.source_paths = sources
-        print(f'req.target: {req.target}')
         if req.target.startswith('file://'):
             target_path = req.target[7:]
             print(f'target:{target_path}')
