@@ -89,15 +89,15 @@ def on_ui_settings():
                                refresh=update_execution_queue_count,
                                section=section
                            ))
-    shared.opts.add_option("face_fusion_max_memory", 
-                           shared.OptionInfo(
-                               default=1, 
-                               label=wording.get('max_memory_help'), 
-                               component=gr.Slider, 
-                               component_args={"minimum": 0, "maximum": 128, "step": 1}, 
-                               refresh=update_execution_max_memory,
-                               section=section
-                           ))
+    # shared.opts.add_option("face_fusion_max_memory", 
+    #                        shared.OptionInfo(
+    #                            default=0, 
+    #                            label=wording.get('max_memory_help'), 
+    #                            component=gr.Slider, 
+    #                            component_args={"minimum": 0, "maximum": 128, "step": 1}, 
+    #                            refresh=update_execution_max_memory,
+    #                            section=section
+    #                        ))
     shared.opts.add_option("face_fusion_prongraphic_content_filtering",
                            shared.OptionInfo(
                                default=facefusion.globals.prongraphic_filtering,
