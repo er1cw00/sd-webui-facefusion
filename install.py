@@ -26,13 +26,16 @@ with open(req_file) as file:
                 package_name, package_version = package.split('==')
                 installed_version = get_installed_version(package_name)
                 if installed_version != package_version:
+                    print(f'install {package}')
                     launch.run_pip(f"install -U {package}", f"sd-webui-facefusion requirement: changing {package_name} version from {installed_version} to {package_version}")
             elif '>=' in package:
                 package_name, package_version = package.split('>=')
                 installed_version = get_installed_version(package_name)
                 if not installed_version or comparable_version(installed_version) < comparable_version(package_version):
+                    print(f'install {package}')
                     launch.run_pip(f"install -U {package}", f"sd-webui-facefusion requirement: changing {package_name} version from {installed_version} to {package_version}")
             elif not launch.is_installed(package):
+                print(f'install {package}')
                 launch.run_pip(f"install {package}", f"sd-webui-controlnet requirement: {package}")
         except Exception as e:
             print(e)
