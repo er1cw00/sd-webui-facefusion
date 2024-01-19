@@ -102,7 +102,7 @@ def apply_args() -> None:
 
 
     proxy_host = getattr(shared.cmd_opts, 'facefusion_proxy', None)
-    prongraphic_filtering = shared.opts.data.get('face_fusion_max_memory', True)
+    prongraphic_filtering = shared.opts.data.get('face_fusion_prongraphic_content_filtering', True)
     facefusion.globals.proxy_host = proxy_host
     facefusion.globals.prongraphic_filtering = prongraphic_filtering
     

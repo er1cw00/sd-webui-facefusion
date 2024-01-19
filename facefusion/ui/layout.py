@@ -99,7 +99,7 @@ def on_ui_settings():
                            ))
     shared.opts.add_option("face_fusion_prongraphic_content_filtering",
                            shared.OptionInfo(
-                               default=True,
+                               default=facefusion.globals.prongraphic_filtering,
                                label="Enable adult content filtering",
                                component=gr.Checkbox,
                                component_args={"interactive": True},
