@@ -128,7 +128,7 @@ def facefusion_api(_: gr.Blocks, app: FastAPI):
         req.providers = decode_execution_providers(req.providers)
         if len(req.providers) == 0:
             return (False, 'No executor providers')
-        globals.exection_providers = req.providers
+        globals.execution_providers = req.providers
         if req.face_selector not in choices.face_selector_modes:
             return (False, 'Unknown face selector')
         globals.face_selector_mode = req.face_selector
