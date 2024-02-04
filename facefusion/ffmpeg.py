@@ -10,6 +10,7 @@ from facefusion.vision import detect_fps
 def run_ffmpeg(args : List[str]) -> bool:
 	commands = [ 'ffmpeg', '-hide_banner', '-loglevel', 'error' ]
 	commands.extend(args)
+	print(f'ffmpeg>> {commands} ')
 	try:
 		subprocess.run(commands, stderr = subprocess.PIPE, check = True)
 		return True
@@ -62,7 +63,7 @@ def merge_video(target_path : str, fps : float) -> bool:
 		output_video_compression = round(51 - (facefusion.globals.output_video_quality * 0.51))
 		commands.extend([ '-cq', str(output_video_compression) ])
 	if facefusion.globals.output_video_encoder in [ 'libx265', 'hevc_nvenc']:
-		commands.extend([ '-tag:v hvc1' ])
+		commands.extend([ '-tag:v', 'hvc1' ])
 	commands.extend([ '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-y', temp_output_video_path ])
 	return run_ffmpeg(commands)
 
