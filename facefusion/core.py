@@ -86,7 +86,7 @@ def apply_args() -> None:
     facefusion.globals.output_image_quality = output_image_quality              #args.output_image_quality
     facefusion.globals.output_video_encoder = output_video_encoder              #args.output_video_encoder
     facefusion.globals.output_video_quality = output_video_quality              #args.output_video_quality
-    facefusion.globals.keep_fps = True                      #args.keep_fps
+    facefusion.globals.keep_fps = False                      #args.keep_fps
     facefusion.globals.skip_audio = False                   #args.skip_audio
     
     # frame processors
@@ -116,7 +116,7 @@ def apply_args() -> None:
     facefusion.globals.output_dir = output_dir
     
     tmp_dir = tempfile.gettempdir()
-    upload_dir = shared.opts.data.get("face_fusion_upload_path", tmp_dir)
+    upload_dir = tmp_dir #shared.opts.data.get("face_fusion_upload_path", tmp_dir)
     if not os.path.exists(upload_dir):
         os.makedirs(upload_dir)
     facefusion.globals.upload_dir = upload_dir
