@@ -21,8 +21,10 @@ from facefusion.processors.frame import globals as frame_processors_globals
 from facefusion.processors.frame import choices as frame_processors_choices
 from facefusion.face_masker import create_static_box_mask, create_occlusion_mask, create_region_mask, clear_face_occluder, clear_face_parser
 
+import cv2
 from cv2.typing import Size
 
+PADDING = 4
 FRAME_PROCESSOR = None
 MODEL_MATRIX = None
 THREAD_LOCK : threading.Lock = threading.Lock()
@@ -278,8 +280,36 @@ def process_frame(source_face : Face, reference_faces : FaceSet, temp_frame : Fr
 		if many_faces:
 			for target_face in many_faces:
 				temp_frame = swap_face(source_face, target_face, temp_frame)
+	if facefusion.globals.watermark and facefusion.globals.watermark_logo_path != None :
+		logo = cv2.imread(facefusion.globals.watermark_logo_path, cv2.IMREAD_UNCHANGED)
+		if logo is not None and logo.shape[2] == 4 :
+			temp_frame = add_watermark(temp_frame, logo)
 	return temp_frame
 
+def add_watermark(img, logo) -> Frame:
+    image_heigh, image_width, _ = img.shape
+    logo_heigh, logo_width, _ = logo.shape 
+    print(f'resolution: {image_width}x{image_heigh}')
+    print(f'logo: {logo_width}x{logo_heigh}')
+	
+    if image_heigh < logo_heigh + PADDING * 2 and image_width > logo_width + PADDING * 2:
+        return img
+    y = image_heigh - logo_heigh - PADDING * 1
+    x = PADDING
+
+    _, _, _, a = cv2.split(logo)
+    mask = cv2.merge([a])
+
+    dst = cv2.cvtColor(img, cv2.COLOR_BGR2BGRA)
+    ret, mask = cv2.threshold(mask, 10, 255, cv2.THRESH_BINARY)
+    inv_mask = cv2.bitwise_not(mask)
+
+    roi = dst[y:y+logo_heigh, x:x+logo_width]
+    bg = cv2.bitwise_and(roi, roi, mask=inv_mask)
+    new_logo = cv2.bitwise_and(logo, logo, mask=mask)
+    result = cv2.addWeighted(bg, 1.0, new_logo, 0.9, 0)
+    dst[y:y+logo_heigh, x:x+logo_width] = result
+    return dst
 
 def process_frames(source_paths : List[str], temp_frame_paths : List[str], update_progress : Update_Process) -> None:
 	source_frames = read_static_images(source_paths)

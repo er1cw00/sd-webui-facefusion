@@ -11,6 +11,8 @@ output_dir : Optional[str] = None
 upload_dir : Optional[str] = None 
 output_image_format : Optional[str] = 'jpg'
 # misc
+watermark : Optional[bool] = None
+watermark_logo_path: Optional[str] = None
 skip_download : Optional[bool] = None
 headless : Optional[bool] = None
 log_level : Optional[LogLevel] = None

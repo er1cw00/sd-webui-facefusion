@@ -21,7 +21,7 @@ from facefusion.face_analyser import get_one_face, get_average_face
 from facefusion.face_store import get_reference_faces, append_reference_face
 from facefusion.vision import get_video_frame, detect_fps, read_image, read_static_images
 from facefusion.content_analyser import analyse_image, analyse_video
-from facefusion.filesystem import is_image, is_video, list_module_names, get_temp_frame_paths, create_temp, move_temp, clear_temp
+from facefusion.filesystem import resolve_relative_path, is_image, is_video, list_module_names, get_temp_frame_paths, create_temp, move_temp, clear_temp
 from facefusion.execution_helper import encode_execution_providers, decode_execution_providers
 from facefusion.processors.frame.core import get_frame_processors_modules, load_frame_processor_module
 from facefusion.processors.frame import globals as frame_processors_globals
@@ -47,6 +47,9 @@ def apply_args() -> None:
     facefusion.globals.skip_download = skip_download        #args.skip_download
     facefusion.globals.headless = False                     #args.headless
     facefusion.globals.log_level = 'debug'                  #args.log_level
+    facefusion.globals.watermark_logo_path = resolve_relative_path('../watermark.png')
+    facefusion.globals.watermark = True
+    print(f'watermark logo: {facefusion.globals.watermark_logo_path}')
     # execution
     execution_providers = encode_execution_providers(onnxruntime.get_available_providers())
     thread_count = shared.opts.data.get('face_fusion_execution_thread_count', 1)

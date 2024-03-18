@@ -12,3 +12,8 @@ def preload(parser: argparse.ArgumentParser):
         default=None,
         help="facefusion model download proxy",
     )
+    parser.add_argument(
+        "--facefusion-disable-install",
+        action="store_false",
+        help="facefusion not install dependency",
+    )

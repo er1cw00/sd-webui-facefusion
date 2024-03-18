@@ -40,7 +40,7 @@ class FrameProcessRequest(BaseModel):
     face_detect_score: float = 0.5
     face_detect_size: str = '640x640'
     skip_download: Optional[bool] = None
-        
+    watermark: Optional[bool] = None
         
 class FrameProcessResponse(BaseModel):
     output: Optional[str]
@@ -162,6 +162,7 @@ def facefusion_api(_: gr.Blocks, app: FastAPI):
         globals.face_detector_size = req.face_detect_size
 
         globals.skip_download = req.skip_download
+        globals.watermark = req.watermark
         if len(req.processors) == 0:
             return (False, 'No Frame Prosessor')
         processors = []
