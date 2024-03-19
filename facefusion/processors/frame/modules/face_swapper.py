@@ -289,8 +289,6 @@ def process_frame(source_face : Face, reference_faces : FaceSet, temp_frame : Fr
 def add_watermark(img, logo) -> Frame:
     image_heigh, image_width, _ = img.shape
     logo_heigh, logo_width, _ = logo.shape 
-    print(f'resolution: {image_width}x{image_heigh}')
-    print(f'logo: {logo_width}x{logo_heigh}')
 	
     if image_heigh < logo_heigh + PADDING * 2 and image_width > logo_width + PADDING * 2:
         return img
