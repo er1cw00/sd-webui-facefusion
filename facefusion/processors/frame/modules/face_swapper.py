@@ -290,8 +290,8 @@ def add_watermark(img, logo) -> Frame:
     image_heigh, image_width, _ = img.shape
     logo_heigh, logo_width, _ = logo.shape 
 	
-    if image_heigh < logo_heigh + PADDING * 2 and image_width > logo_width + PADDING * 2:
-        return img
+    if image_heigh <= logo_heigh + PADDING * 2 or image_width <= logo_width + PADDING * 2:
+        return img 
     y = image_heigh - logo_heigh - PADDING * 1
     x = PADDING
 
